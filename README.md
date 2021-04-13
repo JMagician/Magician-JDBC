@@ -113,4 +113,4 @@ List<DemoDTO> demoDTOList = JdbcTemplate.create().selectList("select * from test
 
 ## 开发资源
 - 开发文档: [http://magician-io.com/docs/jdbc/index.html](http://magician-io.com/docs/jdbc/index.html)
-- 使用示例: [https://github.com/yuyenews/Magician-Example](https://github.com/yuyenews/Magician-Example)
+- 使用示例: [https://github.com/yuyenews/yuyenews-Magician-JDBC-Example](https://github.com/yuyenews/yuyenews-Magician-JDBC-Example)
