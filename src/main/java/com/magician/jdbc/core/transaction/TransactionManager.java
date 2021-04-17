@@ -1,4 +1,4 @@
-package com.magician.jdbc.core.traction;
+package com.magician.jdbc.core.transaction;
 
 import com.magician.jdbc.core.constant.enums.TractionLevel;
 import com.magician.jdbc.core.util.ThreadUtil;
@@ -12,13 +12,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 事务管理aop
+ * 事务管理
  * @author yuye
  *
  */
-public class TractionManager {
+public class TransactionManager {
 
-	private static Logger logger = LoggerFactory.getLogger(TractionManager.class);
+	private static Logger logger = LoggerFactory.getLogger(TransactionManager.class);
 
 	/**
 	 * 获取数据库连接，并设置为不自动提交

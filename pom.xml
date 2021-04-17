@@ -6,7 +6,7 @@
 
     <groupId>com.github.yuyenews</groupId>
     <artifactId>Magician-JDBC</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
 
     <dependencies>
         <dependency>
