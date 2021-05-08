@@ -1,5 +1,6 @@
 package com.magician.jdbc.sqlbuild;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.magician.jdbc.core.util.StringUtil;
 
@@ -20,6 +21,11 @@ public abstract class BaseSqlBuilder {
      */
     private String where;
 
+    /**
+     * 以主键作为判断条件
+     * @param primaryKeyName
+     * @return
+     */
     public BaseSqlBuilder byPrimaryKey(String primaryKeyName){
         StringBuffer where = new StringBuffer();
         where.append(" where ");
@@ -32,6 +38,11 @@ public abstract class BaseSqlBuilder {
         return this;
     }
 
+    /**
+     * 自定义条件判断
+     * @param whereStr
+     * @return
+     */
     public BaseSqlBuilder where(String whereStr){
         StringBuffer where = new StringBuffer();
         where.append(" where ");
@@ -41,7 +52,12 @@ public abstract class BaseSqlBuilder {
         return this;
     }
 
-    public String getFieldName(Field field){
+    /**
+     * 获取字段名称
+     * @param field
+     * @return
+     */
+    protected String getFieldName(Field field){
         JsonProperty jsonProperty = field.getAnnotation(JsonProperty.class);
         if(jsonProperty == null || StringUtil.isNull(jsonProperty.value())){
             return field.getName();
@@ -50,17 +66,60 @@ public abstract class BaseSqlBuilder {
         }
     }
 
+    /**
+     * 判断是否排除排除该字段
+     * @param field
+     * @return
+     */
+    protected boolean ignore(Field field){
+        JsonIgnore jsonIgnore = field.getAnnotation(JsonIgnore.class);
+        if(jsonIgnore != null){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 获取查询和修改的字段
+     * @param fields
+     * @return
+     */
+    protected StringBuffer getCol(Field[] fields){
+        StringBuffer sql = new StringBuffer();
+        boolean isFirst = true;
+        for (Field field : fields) {
+            if(ignore(field)){
+                continue;
+            }
+
+            String fieldName = getFieldName(field);
+
+            if (!isFirst) {
+                sql.append(",");
+            }
+            sql.append(fieldName);
+            isFirst = false;
+        }
+
+        return sql;
+    }
+
+    /**
+     * 构建sql
+     * @return
+     * @throws Exception
+     */
     public abstract String builder() throws Exception;
 
-    public String getTableName() {
+    protected String getTableName() {
         return tableName;
     }
 
-    public void setTableName(String tableName) {
+    protected void setTableName(String tableName) {
         this.tableName = tableName;
     }
 
-    public String getWhere() {
+    protected String getWhere() {
         return where;
     }
 

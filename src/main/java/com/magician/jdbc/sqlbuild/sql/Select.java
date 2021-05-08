@@ -57,17 +57,6 @@ public class Select extends BaseSqlBuilder {
             return "*";
         }
 
-        StringBuffer sql = new StringBuffer();
-        boolean isFirst = true;
-        for(Field field : fields){
-            String fieldName = getFieldName(field);
-            if(!isFirst){
-                sql.append(",");
-            }
-            sql.append(fieldName);
-            isFirst = false;
-        }
-
-        return sql.toString();
+        return getCol(fields).toString();
     }
 }

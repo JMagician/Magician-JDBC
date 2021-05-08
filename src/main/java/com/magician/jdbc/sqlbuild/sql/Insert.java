@@ -43,19 +43,14 @@ public class Insert extends BaseSqlBuilder {
         sql.append("insert into ");
         sql.append(this.getTableName());
         sql.append("(");
+        sql.append(getCol(fields));
+        sql.append(") values(");
         boolean isFirst = true;
         for (Field field : fields) {
-            String fieldName = getFieldName(field);
-
-            if (!isFirst) {
-                sql.append(",");
+            if(ignore(field)){
+                continue;
             }
-            sql.append(fieldName);
-            isFirst = false;
-        }
-        sql.append(") values(");
-        isFirst = true;
-        for (Field field : fields) {
+
             String fieldName = getFieldName(field);
 
             if (!isFirst) {

@@ -43,9 +43,11 @@ public class Update extends BaseSqlBuilder {
         sql.append("update ");
         sql.append(this.getTableName());
         sql.append(" set ");
-
         boolean isFirst = true;
         for(Field field : fields){
+            if(ignore(field)){
+                continue;
+            }
 
             String fieldName = getFieldName(field);
 
