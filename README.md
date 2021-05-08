@@ -98,7 +98,7 @@ DemoDTO param2 = new DemoDTO();
 param2.setId(103);
 JdbcTemplate.create().update(sql2, param2);
 
-// 将DEO保存到数据库
+// 将Demo保存到数据库
 DemoDTO demo = new DemoDTO();
 demo.setCreateTime(new Date());
 demo.setName("testName");
