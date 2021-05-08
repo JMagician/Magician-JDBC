@@ -1,10 +1,6 @@
 package com.magician.jdbc.helper.templete;
 
 
-import com.magician.jdbc.core.constant.enums.OperType;
-import com.magician.jdbc.helper.templete.base.BaseSingleTableTemplate;
-import com.magician.jdbc.helper.templete.model.MagicianGet;
-import com.magician.jdbc.helper.templete.model.MagicianUpdate;
 import com.magician.jdbc.helper.templete.base.BaseJdbcTemplate;
 import com.magician.jdbc.helper.templete.model.PageModel;
 import com.magician.jdbc.helper.templete.model.PageParamModel;
@@ -43,72 +39,6 @@ public class JdbcTemplate extends BaseJdbcTemplate {
         return jdbcTemplate;
     }
 
-    /* ******************************** 单表的基础增删改查操作 ********************************* */
-
-    /**
-     * 根据主键查询一条数据
-     * @param tableName
-     * @param primaryKey
-     * @param param
-     * @param resultType
-     * @param <T>
-     * @return
-     * @throws Exception
-     */
-    public <T> T getOneByPrimaryKey(String tableName, String primaryKey, Object param, Class<T> resultType) throws Exception {
-        MagicianGet magicianGet = new MagicianGet();
-        magicianGet.setTableName(tableName);
-        magicianGet.setPrimaryKey(primaryKey);
-        return BaseSingleTableTemplate.get(magicianGet, dataSourceName, param, resultType);
-    }
-
-    /**
-     * 插入一条数据
-     * @param tableName
-     * @param param
-     * @return
-     * @throws Exception
-     */
-    public int insert(String tableName, Object param) throws Exception {
-        MagicianUpdate magicianUpdate = new MagicianUpdate();
-        magicianUpdate.setOperType(OperType.INSERT);
-        magicianUpdate.setTableName(tableName);
-        return BaseSingleTableTemplate.update(magicianUpdate, dataSourceName, param);
-    }
-
-    /**
-     * 根据主键删除一条数据
-     * @param tableName
-     * @param primaryKey
-     * @param param
-     * @return
-     * @throws Exception
-     */
-    public int deleteByPrimaryKey(String tableName, String primaryKey, Object param) throws Exception {
-        MagicianUpdate magicianUpdate = new MagicianUpdate();
-        magicianUpdate.setOperType(OperType.DELETE);
-        magicianUpdate.setTableName(tableName);
-        magicianUpdate.setPrimaryKey(primaryKey);
-        return BaseSingleTableTemplate.update(magicianUpdate, dataSourceName, param);
-    }
-
-    /**
-     * 根据主键修改一条数据
-     * @param tableName
-     * @param primaryKey
-     * @param param
-     * @return
-     * @throws Exception
-     */
-    public int updateByPrimaryKey(String tableName, String primaryKey, Object param) throws Exception {
-        MagicianUpdate magicianUpdate = new MagicianUpdate();
-        magicianUpdate.setOperType(OperType.UPDATE);
-        magicianUpdate.setTableName(tableName);
-        magicianUpdate.setPrimaryKey(primaryKey);
-        return BaseSingleTableTemplate.update(magicianUpdate, dataSourceName, param);
-    }
-
-    /* ***************************** 更复杂的数据库操作 ****************************** */
     /**
      * 查询多条数据
      *

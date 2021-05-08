@@ -87,29 +87,38 @@ MagicianJDBC.createJDBC()
 ```java
 /* ************** 操作数据库，这些代码 在实战中需要写到对应的DAO里面 ************ */
 // 从test表查询主键=102的数据
-DemoDTO demoDTO = JdbcTemplate.create().getOneByPrimaryKey("test","id", 102, DemoDTO.class);
+String sql = SqlBuilder.select("test").byPrimaryKey("id").builder();
+DemoDTO param = new DemoDTO();
+param.setId(102);
+DemoDTO demoDTO = JdbcTemplate.create().selectOne(sql, param, DemoDTO.class);
 
-// 删除主键=104的数据
-JdbcTemplate.create().deleteByPrimaryKey("test","id", 104);
+// 删除主键=103的数据
+String sql2 = SqlBuilder.delete("test").byPrimaryKey("id").builder();
+DemoDTO param2 = new DemoDTO();
+param2.setId(103);
+JdbcTemplate.create().update(sql2, param2);
 
-// 将DemoDTO保存到数据库
+// 将DEO保存到数据库
 DemoDTO demo = new DemoDTO();
 demo.setCreateTime(new Date());
 demo.setName("testName");
-JdbcTemplate.create().insert("test", demo);
 
-// 修改主键=100的数据的 name为testName，createTime为当前时间
+String sql3 = SqlBuilder.insert("test").column(DemoDTO.class).builder();
+JdbcTemplate.create().update(sql3, demo);
+
+// 修改主键=105的数据的 name为testName，createTime为当前时间
 DemoDTO demo2 = new DemoDTO();
 demo2.setCreateTime(new Date());
 demo2.setName("testName");
-demo2.setId(103);
-JdbcTemplate.create().updateByPrimaryKey("test","id", demo2);
+demo2.setId(105);
+
+String sql5 = SqlBuilder.update("test").column(DemoDTO.class).where("id = #{id}").builder();
+JdbcTemplate.create().update(sql5, demo2);
 
 // 查询name=testName的数据
 DemoDTO demo3 = new DemoDTO();
 demo3.setName("testName");
 List<DemoDTO> demoDTOList = JdbcTemplate.create().selectList("select * from test where name=#{name}", demo3, DemoDTO.class);
-
 // 除了这些，JdbcTemplate里面还有很多操作数据库的方法
 ```
 
