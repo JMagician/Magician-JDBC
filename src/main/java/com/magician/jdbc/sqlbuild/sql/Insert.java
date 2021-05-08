@@ -33,6 +33,7 @@ public class Insert extends BaseSqlBuilder {
      * @return
      * @throws Exception
      */
+    @Override
     public String builder() throws Exception {
 
         Field[] fields = this.setFields.getDeclaredFields();

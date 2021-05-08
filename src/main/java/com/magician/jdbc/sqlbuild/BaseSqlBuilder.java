@@ -53,6 +53,13 @@ public abstract class BaseSqlBuilder {
     }
 
     /**
+     * 构建sql
+     * @return
+     * @throws Exception
+     */
+    public abstract String builder() throws Exception;
+
+    /**
      * 获取字段名称
      * @param field
      * @return
@@ -103,13 +110,6 @@ public abstract class BaseSqlBuilder {
 
         return sql;
     }
-
-    /**
-     * 构建sql
-     * @return
-     * @throws Exception
-     */
-    public abstract String builder() throws Exception;
 
     protected String getTableName() {
         return tableName;

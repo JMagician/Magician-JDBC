@@ -33,6 +33,7 @@ public class Update extends BaseSqlBuilder {
      * @return
      * @throws Exception
      */
+    @Override
     public String builder() throws Exception {
         Field[] fields = this.setFields.getDeclaredFields();
         if(fields == null || fields.length < 1){

@@ -33,6 +33,7 @@ public class Select extends BaseSqlBuilder {
      * @return
      * @throws Exception
      */
+    @Override
     public String builder() throws Exception {
         StringBuffer sql = new StringBuffer();
         sql.append("select ");
