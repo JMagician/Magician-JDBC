@@ -124,5 +124,5 @@ List<DemoDTO> demoDTOList = JdbcTemplate.create().selectList("select * from test
 ```
 
 ## Documentation and examples
-- Document: [http://magician-io.com/docs/en/jdbc/index.html](http://magician-io.com/docs/jdbc/index.html)
+- Document: [http://magician-io.com/docs/en/jdbc/index.html](http://magician-io.com/docs/en/jdbc/index.html)
 - Example: [https://github.com/yuyenews/yuyenews-Magician-JDBC-Example](https://github.com/yuyenews/yuyenews-Magician-JDBC-Example)
