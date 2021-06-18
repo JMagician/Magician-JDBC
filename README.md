@@ -17,51 +17,51 @@
 <br/>
 
 <div align=center>
-Magician的官方JDBC组件
+Magician's official JDBC component
 </div>
 
 
-## 项目简介
+## Introduction
 
-Magician-JDBC 是Magician的官方JDBC组件，可以很快捷的实现数据库操作
+Magician-JDBC is the official JDBC component of Magician, which can quickly implement database operations
 
-## 安装步骤
+## installation steps
 
-### 一、导入依赖
+### 1. Import dependencies
 
 ```xml
 <dependency>
     <groupId>com.github.yuyenews</groupId>
     <artifactId>Magician-JDBC</artifactId>
-    <version>最新版</version>
+    <version>last version</version>
 </dependency>
 
-<!-- mysql驱动包 -->
+<!-- mysql driver package -->
 <dependency>
     <groupId>mysql</groupId>
     <artifactId>mysql-connector-java</artifactId>
     <version>8.0.20</version>
 </dependency>
-<!-- druid数据源 -->
+<!-- druid connection pool -->
 <dependency>
     <groupId>com.alibaba</groupId>
     <artifactId>druid</artifactId>
     <version>1.2.5</version>
 </dependency>
 
-<!-- 这个是日志包，支持任意可以跟slf4j桥接的包 -->
+<!-- This is the log package, which supports any package that can be bridged with slf4j -->
 <dependency>
     <groupId>org.slf4j</groupId>
     <artifactId>slf4j-jdk14</artifactId>
     <version>1.7.12</version>
 </dependency>
 ```
-### 二、创建数据源
+### 2. Create Datasource
 ```java
 /*
- * 理论上支持任意 实现了 DataSource接口 的数据源
- * 这段代码在实战中 可以另起一个类去存放
- * 此处是用druid为例子的
+ * In theory, any data source that implements the DataSource interface is supported
+ * This code can be stored in another class in actual combat
+ * Here is an example using druid
  */
 DruidDataSource dataSource = new DruidDataSource();
 
@@ -75,30 +75,31 @@ properties.put("druid.driverClassName", Driver.class.getName());
 dataSource.setConnectProperties(properties);
 ```
 
-### 三、创建JDBC资源
+### 3. Create JDBC
 ```java
-// 创建JDBC的资源，建议只在项目启动的时候执行一次
+// Create JDBC, it is recommended to execute it only once when the project starts
 MagicianJDBC.createJDBC()
-        .addDataSource("a", dataSource)// 添加数据源，这个方法可以调用多次，添加多个数据源
-        .defaultDataSourceName("a");// 设置默认数据源的名称
+        .addDataSource("a", dataSource)// Add data source, this method can be called multiple times to add multiple data sources
+        .defaultDataSourceName("a");// Set the name of the default data source
 ```
 
-### 操作数据库
+### Operational Database
 ```java
-/* ************** 操作数据库，这些代码 在实战中需要写到对应的DAO里面 ************ */
-// 从test表查询主键=102的数据
+/* ************** Operate the database, these codes need to be written into the corresponding DAO in actual combat ************ */
+
+// Query data with primary key=102 from the test table
 String sql = SqlBuilder.select("test").byPrimaryKey("id").builder();
 DemoDTO param = new DemoDTO();
 param.setId(102);
 DemoDTO demoDTO = JdbcTemplate.create().selectOne(sql, param, DemoDTO.class);
 
-// 删除主键=103的数据
+// Delete data with primary key=103
 String sql2 = SqlBuilder.delete("test").byPrimaryKey("id").builder();
 DemoDTO param2 = new DemoDTO();
 param2.setId(103);
 JdbcTemplate.create().update(sql2, param2);
 
-// 将Demo保存到数据库
+// Save the Demo to the database
 DemoDTO demo = new DemoDTO();
 demo.setCreateTime(new Date());
 demo.setName("testName");
@@ -106,7 +107,7 @@ demo.setName("testName");
 String sql3 = SqlBuilder.insert("test").column(DemoDTO.class).builder();
 JdbcTemplate.create().update(sql3, demo);
 
-// 修改主键=105的数据的 name为testName，createTime为当前时间
+// Modify the name of the data with primary key=105 to testName, and createTime to the current time
 DemoDTO demo2 = new DemoDTO();
 demo2.setCreateTime(new Date());
 demo2.setName("testName");
@@ -115,13 +116,13 @@ demo2.setId(105);
 String sql5 = SqlBuilder.update("test").column(DemoDTO.class).where("id = #{id}").builder();
 JdbcTemplate.create().update(sql5, demo2);
 
-// 查询name=testName的数据
+// Query data with name=testName
 DemoDTO demo3 = new DemoDTO();
 demo3.setName("testName");
 List<DemoDTO> demoDTOList = JdbcTemplate.create().selectList("select * from test where name=#{name}", demo3, DemoDTO.class);
-// 除了这些，JdbcTemplate里面还有很多操作数据库的方法
+// In addition to these, there are many ways to manipulate the database in JdbcTemplate
 ```
 
-## 开发资源
-- 开发文档: [http://magician-io.com/docs/jdbc/index.html](http://magician-io.com/docs/jdbc/index.html)
-- 使用示例: [https://github.com/yuyenews/yuyenews-Magician-JDBC-Example](https://github.com/yuyenews/yuyenews-Magician-JDBC-Example)
+## Documentation and examples
+- Document: [http://magician-io.com/docs/en/jdbc/index.html](http://magician-io.com/docs/jdbc/index.html)
+- Example: [https://github.com/yuyenews/yuyenews-Magician-JDBC-Example](https://github.com/yuyenews/yuyenews-Magician-JDBC-Example)
