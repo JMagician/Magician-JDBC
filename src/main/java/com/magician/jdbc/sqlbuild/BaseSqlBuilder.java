@@ -120,6 +120,9 @@ public abstract class BaseSqlBuilder {
     }
 
     protected String getWhere() {
+        if(where == null || "null".equals(where)){
+            return "";
+        }
         return where;
     }
 
