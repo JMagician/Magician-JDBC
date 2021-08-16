@@ -60,6 +60,13 @@ public abstract class BaseSqlBuilder {
     public abstract String builder() throws Exception;
 
     /**
+     * 其他sql，比如order by，group by，limit等 都可以写在里面，支持混写
+     * @param end
+     * @return
+     */
+    public abstract BaseSqlBuilder end(String end);
+
+    /**
      * 获取字段名称
      * @param field
      * @return

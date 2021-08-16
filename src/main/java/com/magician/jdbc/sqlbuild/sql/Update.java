@@ -65,4 +65,9 @@ public class Update extends BaseSqlBuilder {
         sql.append(this.getWhere());
         return sql.toString();
     }
+
+    @Override
+    public BaseSqlBuilder end(String end) {
+        return null;
+    }
 }

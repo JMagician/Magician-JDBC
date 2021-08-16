@@ -13,6 +13,10 @@ public class Select extends BaseSqlBuilder {
      * 要查询的字段
      */
     private Class setFields;
+    /**
+     * 其他sql，比如order by，group by，limit等 都可以写在里面，支持混写
+     */
+    private String end;
 
     public Select(String tableName){
         this.setTableName(tableName);
@@ -41,7 +45,19 @@ public class Select extends BaseSqlBuilder {
         sql.append(" from ");
         sql.append(this.getTableName());
         sql.append(this.getWhere());
+        sql.append(this.getEnd());
         return sql.toString();
+    }
+
+    /**
+     * 其他sql，比如order by，group by，limit等 都可以写在里面，支持混写
+     * @param end
+     * @return
+     */
+    @Override
+    public BaseSqlBuilder end(String end){
+        this.end = " " + end;
+        return this;
     }
 
     /**
@@ -59,5 +75,12 @@ public class Select extends BaseSqlBuilder {
         }
 
         return getCol(fields).toString();
+    }
+
+    private String getEnd() {
+        if(end == null || "null".equals(end)){
+            return "";
+        }
+        return end;
     }
 }
