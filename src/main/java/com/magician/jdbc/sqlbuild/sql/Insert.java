@@ -68,6 +68,6 @@ public class Insert extends BaseSqlBuilder {
 
     @Override
     public BaseSqlBuilder end(String end) {
-        return null;
+        return this;
     }
 }
