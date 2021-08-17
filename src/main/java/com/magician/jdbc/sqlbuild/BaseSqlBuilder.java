@@ -19,7 +19,7 @@ public abstract class BaseSqlBuilder {
     /**
      * 条件
      */
-    private String where;
+    private StringBuffer where = new StringBuffer(" where");
 
     /**
      * 以主键作为判断条件
@@ -27,13 +27,12 @@ public abstract class BaseSqlBuilder {
      * @return
      */
     public BaseSqlBuilder byPrimaryKey(String primaryKeyName){
-        StringBuffer where = new StringBuffer();
+        where = new StringBuffer();
         where.append(" where ");
         where.append(primaryKeyName);
         where.append("=#{");
         where.append(primaryKeyName);
         where.append("}");
-        this.where = where.toString();
 
         return this;
     }
@@ -44,11 +43,8 @@ public abstract class BaseSqlBuilder {
      * @return
      */
     public BaseSqlBuilder where(String whereStr){
-        StringBuffer where = new StringBuffer();
-        where.append(" where ");
+        where.append(" ");
         where.append(whereStr);
-        this.where = where.toString();
-
         return this;
     }
 
@@ -127,13 +123,17 @@ public abstract class BaseSqlBuilder {
     }
 
     protected String getWhere() {
-        if(where == null || "null".equals(where)){
+        if(where == null){
             return "";
         }
-        return where;
+        String whereStr = where.toString();
+        if(whereStr == null || whereStr.endsWith("where")){
+            return "";
+        }
+        return where.toString();
     }
 
-    public void setWhere(String where) {
+    public void setWhere(StringBuffer where) {
         this.where = where;
     }
 }
