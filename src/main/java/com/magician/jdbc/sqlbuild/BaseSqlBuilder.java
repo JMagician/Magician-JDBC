@@ -130,7 +130,7 @@ public abstract class BaseSqlBuilder {
         if(whereStr == null || whereStr.endsWith("where")){
             return "";
         }
-        return where.toString();
+        return whereStr;
     }
 
     public void setWhere(StringBuffer where) {
