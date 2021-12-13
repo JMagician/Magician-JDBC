@@ -1,8 +1,7 @@
-package com.magician.jdbc.core.transaction;
+package com.magician.jdbc.helper.manager;
 
 import com.magician.jdbc.core.constant.enums.TractionLevel;
 import com.magician.jdbc.core.util.ThreadUtil;
-import com.magician.jdbc.helper.manager.DataSourceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

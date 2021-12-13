@@ -1,5 +1,7 @@
 package com.magician.jdbc;
 
+import com.magician.jdbc.helper.manager.DataSourceManager;
+
 import javax.sql.DataSource;
 
 /**
@@ -22,7 +24,7 @@ public class MagicianJDBC {
      * @return
      */
     public MagicianJDBC addDataSource(String name, DataSource dataSource){
-        MagicianJDBCConfig.addDataSource(name, dataSource);
+        DataSourceManager.addDataSource(name, dataSource);
         return this;
     }
 
@@ -31,7 +33,7 @@ public class MagicianJDBC {
      * @return
      */
     public MagicianJDBC defaultDataSourceName(String name){
-        MagicianJDBCConfig.setDefaultDataSourceName(name);
+        DataSourceManager.setDefaultDataSourceName(name);
         return this;
     }
 }

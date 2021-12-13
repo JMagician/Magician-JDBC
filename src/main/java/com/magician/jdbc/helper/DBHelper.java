@@ -15,19 +15,7 @@ public class DBHelper {
     private static Logger logger = LoggerFactory.getLogger(DBHelper.class);
 
     /**
-     * 无条件查询
-     *
-     * @param sql        sql语句
-     * @param connection 数据库连接
-     * @return 结果集
-     * @throws Exception
-     */
-    public static List<Map<String, Object>> selectList(String sql, Connection connection) throws Exception {
-        return selectList(sql, connection, new Object[]{});
-    }
-
-    /**
-     * 有条件查询
+     * 查询列表
      *
      * @param sql        sql语句
      * @param connection 数据库连接
@@ -36,6 +24,9 @@ public class DBHelper {
      * @throws Exception
      */
     public static List<Map<String, Object>> selectList(String sql, Connection connection, Object[] params) throws Exception {
+        if (params == null) {
+            params = new Object[0];
+        }
         ResultSet resultSet = select(sql, connection, params);
         List<Map<String, Object>> list = new ArrayList<>();
 
@@ -77,18 +68,6 @@ public class DBHelper {
     }
 
     /**
-     * 无条件增删改
-     *
-     * @param sql        sql语句
-     * @param connection 数据库连接
-     * @return 受影响行数
-     * @throws Exception
-     */
-    public static int update(String sql, Connection connection) throws Exception {
-        return update(sql, connection, null);
-    }
-
-    /**
      * 有条件增删改
      *
      * @param sql        sql语句
@@ -98,6 +77,9 @@ public class DBHelper {
      * @throws Exception
      */
     public static int update(String sql, Connection connection, Object[] params) throws Exception {
+        if (params == null) {
+            params = new Object[0];
+        }
         if(logger.isDebugEnabled()){
             logger.debug("sql:{},params:{}",sql, JSONUtil.toJSONString(params));
         }
