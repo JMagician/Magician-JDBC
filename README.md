@@ -1,33 +1,20 @@
-<br/>
+<h1> 
+    <a href="https://magician-io.com">Magician-JDBC</a> ·
+    <img src="https://img.shields.io/badge/licenes-MIT-brightgreen.svg"/>
+    <img src="https://img.shields.io/badge/jdk-11+-brightgreen.svg"/>
+    <img src="https://img.shields.io/badge/maven-3.5.4+-brightgreen.svg"/>
+    <img src="https://img.shields.io/badge/release-master-brightgreen.svg"/>
+</h1>
 
-<div align=center>
-<img width="260px;" src="http://magician-io.com/img/logo-white.png"/>
-</div>
+Magician-JDBC 是Magician的官方JDBC组件，支持多数据源，无sql单表操作，复杂操作可以写sql，事务管理等
 
-<br/>
+## 文档
 
-<div align=center>
+[https://magician-io.com](https://magician-io.com)
 
-<img src="https://img.shields.io/badge/licenes-MIT-brightgreen.svg"/>
-<img src="https://img.shields.io/badge/jdk-11+-brightgreen.svg"/>
-<img src="https://img.shields.io/badge/maven-3.5.4+-brightgreen.svg"/>
-<img src="https://img.shields.io/badge/release-master-brightgreen.svg"/>
+## 示例
 
-</div>
-<br/>
-
-<div align=center>
-Magician's official JDBC component
-</div>
-
-
-## Introduction
-
-Magician-JDBC is the official JDBC component of Magician, which can quickly implement database operations
-
-## installation steps
-
-### 1. Import dependencies
+### 导入依赖
 
 ```xml
 <dependency>
@@ -56,13 +43,9 @@ Magician-JDBC is the official JDBC component of Magician, which can quickly impl
     <version>1.7.12</version>
 </dependency>
 ```
-### 2. Create Datasource
+### 创建数据源
 ```java
-/*
- * In theory, any data source that implements the DataSource interface is supported
- * This code can be stored in another class in actual combat
- * Here is an example using druid
- */
+// 这里用druid做示例，实际上可以支持任意实现了DataSource接口的连接池
 DruidDataSource dataSource = new DruidDataSource();
 
 Properties properties = new Properties();
@@ -75,7 +58,7 @@ properties.put("druid.driverClassName", Driver.class.getName());
 dataSource.setConnectProperties(properties);
 ```
 
-### 3. Create JDBC
+### 将数据源添加到JDBC
 ```java
 // Create JDBC, it is recommended to execute it only once when the project starts
 MagicianJDBC.createJDBC()
@@ -83,46 +66,69 @@ MagicianJDBC.createJDBC()
         .defaultDataSourceName("a");// Set the name of the default data source
 ```
 
-### Operational Database
+### 单表操作
+
+按条件查询
 ```java
-/* ************** Operate the database, these codes need to be written into the corresponding DAO in actual combat ************ */
+List<Condition> conditionList = new ArrayList<>();
+conditionList.add(Condition.get("id > ?", 10));
+conditionList.add(Condition.get("and name = ?", 100));
+conditionList.add(Condition.get("order by create_time", Condition.NOT_WHERE));
 
-// Query data with primary key=102 from the test table
-String sql = SqlBuilder.select("test").byPrimaryKey("id").builder();
-DemoDTO param = new DemoDTO();
-param.setId(102);
-DemoDTO demoDTO = JdbcTemplate.create().selectOne(sql, param, DemoDTO.class);
-
-// Delete data with primary key=103
-String sql2 = SqlBuilder.delete("test").byPrimaryKey("id").builder();
-DemoDTO param2 = new DemoDTO();
-param2.setId(103);
-JdbcTemplate.create().update(sql2, param2);
-
-// Save the Demo to the database
-DemoDTO demo = new DemoDTO();
-demo.setCreateTime(new Date());
-demo.setName("testName");
-
-String sql3 = SqlBuilder.insert("test").column(DemoDTO.class).builder();
-JdbcTemplate.create().update(sql3, demo);
-
-// Modify the name of the data with primary key=105 to testName, and createTime to the current time
-DemoDTO demo2 = new DemoDTO();
-demo2.setCreateTime(new Date());
-demo2.setName("testName");
-demo2.setId(105);
-
-String sql5 = SqlBuilder.update("test").column(DemoDTO.class).where("id = #{id}").builder();
-JdbcTemplate.create().update(sql5, demo2);
-
-// Query data with name=testName
-DemoDTO demo3 = new DemoDTO();
-demo3.setName("testName");
-List<DemoDTO> demoDTOList = JdbcTemplate.create().selectList("select * from test where name=#{name}", demo3, DemoDTO.class);
-// In addition to these, there are many ways to manipulate the database in JdbcTemplate
+List<Map> result = JDBCTemplate.get().select("表名", conditionList, Map.class);
 ```
 
-## Documentation and examples
-- Document: [http://magician-io.com/docs/en/jdbc/index.html](http://magician-io.com/docs/en/jdbc/index.html)
-- Example: [https://github.com/yuyenews/yuyenews-Magician-JDBC-Example](https://github.com/yuyenews/yuyenews-Magician-JDBC-Example)
+按条件删除
+```java
+List<Condition> conditionList = new ArrayList<>();
+conditionList.add(Condition.get("id > ?", 10));
+conditionList.add(Condition.get("and name = ?", 100));
+conditionList.add(Condition.get("order by create_time", Condition.NOT_WHERE));
+
+JDBCTemplate.get().delete("表名", conditionList);
+```
+
+插入一条数据
+```java
+DemoPO demoPO = new DemoPo();
+demoPO.setName("bee");
+demoPo.setAge(10);
+
+JDBCTemplate.get().insert("表名", demoPO);
+```
+修改数据
+```java
+DemoPO demoPO = new DemoPo();
+demoPO.setName("bee");
+demoPo.setAge(10);
+
+List<Condition> conditionList = new ArrayList<>();
+conditionList.add(Condition.get("id = ?", 10));
+conditionList.add(Condition.get("and name = ?", 100));
+
+JDBCTemplate.get().update("表名", demoPO, conditionList);
+```
+
+## 自己写sql
+
+查询
+
+```java
+DemoPO demoPO = new DemoPo();
+demoPO.setName("bee");
+demoPo.setAge(10);
+
+List<Map> result = JDBCTemplate.get().selectList("select * from xxx where name={name} and age={age}", demoPO, Map.class);
+```
+
+增删改
+
+```java
+DemoPO demoPO = new DemoPo();
+demoPO.setName("bee");
+demoPo.setAge(10);
+
+JDBCTemplate.get().exec("update xxx set xxx = {xxx}, ccc = {ccc} where name={name} and age={age}", demoPO);
+```
+
+除此之外，还支持事务管理 和分页查询，详情可以查看文档
