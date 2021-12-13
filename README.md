@@ -10,6 +10,7 @@ Magician-JDBC 是Magician的官方JDBC组件，支持多数据源，无sql单表
 
 ## 文档
 
+这个版本的文档还没出，jar也暂时还没传到中央库，尽请期待，不过可以自己编译，跟着示例玩一下试试
 [https://magician-io.com](https://magician-io.com)
 
 ## 示例
