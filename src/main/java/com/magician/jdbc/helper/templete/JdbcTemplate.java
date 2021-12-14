@@ -125,8 +125,10 @@ public class JDBCTemplate {
         }
         sql.append(" where ");
         SqlBuilderModel sqlBuilderModel = SqlConversion.getSql(sql, conditions);
-
-        int result = DBHelper.update(sqlBuilderModel.getSql(), connectionManager.getConnection(), sqlBuilderModel.getParams());
+        for(Object item : sqlBuilderModel.getParams()){
+            paramList.add(item);
+        }
+        int result = DBHelper.update(sqlBuilderModel.getSql(), connectionManager.getConnection(), paramList.toArray());
         connectionManager.close();
         return result;
     }

@@ -25,7 +25,7 @@ public class SqlConversion {
             if (condition.getVal() == null) {
                 continue;
             }
-
+            sql.append(" ");
             sql.append(condition.getKey());
 
             if (!condition.getVal().equals(Condition.NOT_WHERE)) {
