@@ -19,20 +19,20 @@ import java.util.Map;
 /**
  * 数据库操作
  */
-public class JdbcTemplate {
+public class JDBCTemplate {
 
     /**
      * 数据源
      */
     private String dataSource;
 
-    private JdbcTemplate(){}
+    private JDBCTemplate(){}
 
     /**
      * 获取对象
      * @return
      */
-    public static JdbcTemplate get(){
+    public static JDBCTemplate get(){
         return get(null);
     }
 
@@ -41,11 +41,11 @@ public class JdbcTemplate {
      * @param dataSource
      * @return
      */
-    public static JdbcTemplate get(String dataSource){
+    public static JDBCTemplate get(String dataSource){
         if (dataSource == null) {
             dataSource = DataSourceManager.getDefaultDataSourceName();
         }
-        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        JDBCTemplate jdbcTemplate = new JDBCTemplate();
         jdbcTemplate.dataSource = dataSource;
         return jdbcTemplate;
     }
