@@ -81,9 +81,7 @@ List<Map> result = JDBCTemplate.get().select("表名", conditionList, Map.class)
 按条件删除
 ```java
 List<Condition> conditionList = new ArrayList<>();
-conditionList.add(Condition.get("id > ?", 10));
-conditionList.add(Condition.get("and name = ?", 100));
-conditionList.add(Condition.get("order by create_time", Condition.NOT_WHERE));
+conditionList.add(Condition.get("id = ?", 10));
 
 JDBCTemplate.get().delete("表名", conditionList);
 ```
