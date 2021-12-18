@@ -28,14 +28,24 @@ public class SqlConversion {
             sql.append(" ");
             sql.append(condition.getKey());
 
-            if (!condition.getVal().equals(Condition.NOT_WHERE)) {
-                params.add(condition.getVal());
+            if (isNotWhere(condition.getVal())) {
+                continue;
+            }
+            for(Object arg : condition.getVal()){
+                params.add(arg);
             }
         }
 
         sqlBuilderModel.setSql(sql.toString());
         sqlBuilderModel.setParams(params.toArray());
         return sqlBuilderModel;
+    }
+
+    private static boolean isNotWhere(Object[] val){
+        if(val.length == 1 && val[0].equals(Condition.NOT_WHERE)) {
+            return true;
+        }
+        return false;
     }
 
     /**
