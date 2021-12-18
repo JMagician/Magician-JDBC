@@ -41,6 +41,11 @@ public class SqlConversion {
         return sqlBuilderModel;
     }
 
+    /**
+     * 是否是where
+     * @param val
+     * @return
+     */
     private static boolean isNotWhere(Object[] val){
         if(val.length == 1 && val[0].equals(Condition.NOT_WHERE)) {
             return true;
