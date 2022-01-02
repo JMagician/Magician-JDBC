@@ -6,21 +6,21 @@
     <img src="https://img.shields.io/badge/release-master-brightgreen.svg"/>
 </h1>
 
-Magician-JDBC 是Magician的官方JDBC组件，支持多数据源，无sql单表操作，复杂操作可以写sql，事务管理等
+Magician-JDBC is the official JDBC component of Magician, supporting multiple data sources, no sql single table operations, complex operations can write sql, transaction management, etc.
 
-## 文档
+## Documentation
 
 [https://magician-io.com](https://magician-io.com)
 
-## 示例
+## Example
 
-### 导入依赖
+### Importing dependencies
 
 ```xml
 <dependency>
     <groupId>com.github.yuyenews</groupId>
     <artifactId>Magician-JDBC</artifactId>
-    <version>last version</version>
+    <version>2.0.1</version>
 </dependency>
 
 <!-- mysql driver package -->
@@ -43,9 +43,9 @@ Magician-JDBC 是Magician的官方JDBC组件，支持多数据源，无sql单表
     <version>1.7.12</version>
 </dependency>
 ```
-### 创建数据源
+### Creating a data source
 ```java
-// 这里用druid做示例，实际上可以支持任意实现了DataSource接口的连接池
+// Here is an example using druid, which can actually support any connection pool that implements the DataSource interface
 DruidDataSource dataSource = new DruidDataSource();
 
 Properties properties = new Properties();
@@ -58,7 +58,7 @@ properties.put("druid.driverClassName", Driver.class.getName());
 dataSource.setConnectProperties(properties);
 ```
 
-### 将数据源添加到JDBC
+### Adding a data source to JDBC
 ```java
 // Create JDBC, it is recommended to execute it only once when the project starts
 MagicianJDBC.createJDBC()
@@ -66,27 +66,29 @@ MagicianJDBC.createJDBC()
         .defaultDataSourceName("a");// Set the name of the default data source
 ```
 
-### 单表操作
+### Single Table Operations
 
-按条件查询
+Search by condition
 ```java
-List<Condition> conditionList = new ArrayList<>();
-conditionList.add(Condition.get("id > ?", 10));
-conditionList.add(Condition.get("and name = ?", 100));
-conditionList.add(Condition.get("order by create_time", Condition.NOT_WHERE));
+List<Condition> conditionList = ConditionBuilder.createCondition()
+            .add("id > ?", 10)
+            .add("and (name = ? or age > ?)", "bee", 10))
+            .add("order by create_time", Condition.NOT_WHERE))
+            .build();
 
 List<Map> result = JDBCTemplate.get().select("表名", conditionList, Map.class);
 ```
 
-按条件删除
+Delete by condition
 ```java
-List<Condition> conditionList = new ArrayList<>();
-conditionList.add(Condition.get("id = ?", 10));
+List<Condition> conditionList = ConditionBuilder.createCondition()
+        .add("id = ?", 10)
+        .build();
 
 JDBCTemplate.get().delete("表名", conditionList);
 ```
 
-插入一条数据
+Insert a piece of data
 ```java
 DemoPO demoPO = new DemoPo();
 demoPO.setName("bee");
@@ -94,22 +96,24 @@ demoPo.setAge(10);
 
 JDBCTemplate.get().insert("表名", demoPO);
 ```
-修改数据
+
+Modify data
 ```java
 DemoPO demoPO = new DemoPo();
 demoPO.setName("bee");
 demoPo.setAge(10);
 
-List<Condition> conditionList = new ArrayList<>();
-conditionList.add(Condition.get("id = ?", 10));
-conditionList.add(Condition.get("and name = ?", 100));
+List<Condition> conditionList = ConditionBuilder.createCondition()
+        .add("id > ?", 10)
+        .add("and name = ?", "bee"))
+        .build();
 
 JDBCTemplate.get().update("表名", demoPO, conditionList);
 ```
 
-## 自己写sql
+## Write your own sql
 
-查询
+Select
 
 ```java
 DemoPO demoPO = new DemoPo();
@@ -119,7 +123,7 @@ demoPo.setAge(10);
 List<Map> result = JDBCTemplate.get().selectList("select * from xxx where name={name} and age={age}", demoPO, Map.class);
 ```
 
-增删改
+insert, delete, update
 
 ```java
 DemoPO demoPO = new DemoPo();
@@ -129,4 +133,4 @@ demoPo.setAge(10);
 JDBCTemplate.get().exec("update xxx set xxx = {xxx}, ccc = {ccc} where name={name} and age={age}", demoPO);
 ```
 
-除此之外，还支持事务管理 和分页查询，详情可以查看文档
+In addition, transaction management and paging are also supported, see the documentation for details
