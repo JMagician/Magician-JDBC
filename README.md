@@ -76,7 +76,7 @@ List<Condition> conditionList = ConditionBuilder.createCondition()
             .add("order by create_time", Condition.NOT_WHERE))
             .build();
 
-List<Map> result = JDBCTemplate.get().select("表名", conditionList, Map.class);
+List<Map> result = JDBCTemplate.get().select("table name", conditionList, Map.class);
 ```
 
 Delete by condition
@@ -85,7 +85,7 @@ List<Condition> conditionList = ConditionBuilder.createCondition()
         .add("id = ?", 10)
         .build();
 
-JDBCTemplate.get().delete("表名", conditionList);
+JDBCTemplate.get().delete("table name", conditionList);
 ```
 
 Insert a piece of data
@@ -94,7 +94,7 @@ DemoPO demoPO = new DemoPo();
 demoPO.setName("bee");
 demoPo.setAge(10);
 
-JDBCTemplate.get().insert("表名", demoPO);
+JDBCTemplate.get().insert("table name", demoPO);
 ```
 
 Modify data
@@ -108,7 +108,7 @@ List<Condition> conditionList = ConditionBuilder.createCondition()
         .add("and name = ?", "bee"))
         .build();
 
-JDBCTemplate.get().update("表名", demoPO, conditionList);
+JDBCTemplate.get().update("table name", demoPO, conditionList);
 ```
 
 ## Write your own sql
