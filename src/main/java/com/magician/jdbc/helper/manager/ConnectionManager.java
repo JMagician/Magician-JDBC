@@ -26,7 +26,7 @@ public class ConnectionManager {
     }
 
     public void close() throws SQLException {
-        if (!isTransaction) {
+        if (!isTransaction && connection != null) {
             connection.close();
         }
     }

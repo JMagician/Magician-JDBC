@@ -63,26 +63,30 @@ public class JDBCTemplate {
      */
     public <T> List<T> select(String tableName, List<Condition> conditions, Class<T> cls) throws Exception {
         ConnectionManager connectionManager = getConnection();
+        try {
+            StringBuffer sql = new StringBuffer();
+            sql.append("select * from ");
+            sql.append(tableName);
 
-        StringBuffer sql = new StringBuffer();
-        sql.append("select * from ");
-        sql.append(tableName);
+            List<Map<String, Object>> result = null;
+            if (conditions != null && conditions.size() > 0) {
+                sql.append(" where ");
+                SqlBuilderModel sqlBuilderModel = SqlConversion.getSql(sql, conditions);
+                result = DBHelper.selectList(sqlBuilderModel.getSql(), connectionManager.getConnection(), sqlBuilderModel.getParams());
+            } else {
+                result = DBHelper.selectList(sql.toString(), connectionManager.getConnection(), null);
+            }
 
-        List<Map<String, Object>> result = null;
-        if (conditions != null && conditions.size() > 0) {
-            sql.append(" where ");
-            SqlBuilderModel sqlBuilderModel = SqlConversion.getSql(sql, conditions);
-            result = DBHelper.selectList(sqlBuilderModel.getSql(), connectionManager.getConnection(), sqlBuilderModel.getParams());
-        } else {
-            result = DBHelper.selectList(sql.toString(), connectionManager.getConnection(), null);
+            List<T> resultList = new ArrayList<>();
+            for (Map<String, Object> item : result){
+                resultList.add(JSONUtil.toJavaObject(item, cls));
+            }
+            return resultList;
+        } catch (Exception e){
+            throw e;
+        } finally {
+            connectionManager.close();
         }
-
-        List<T> resultList = new ArrayList<>();
-        for (Map<String, Object> item : result){
-            resultList.add(JSONUtil.toJavaObject(item, cls));
-        }
-        connectionManager.close();
-        return resultList;
     }
 
     /**
@@ -94,43 +98,47 @@ public class JDBCTemplate {
      * @throws Exception
      */
     public int update(String tableName,  Object data, List<Condition> conditions) throws Exception {
-        if(conditions == null || conditions.size() < 1){
+        if (conditions == null || conditions.size() < 1) {
             throw new Exception("为了安全起见，不带条件的修改操作，请自己写sql处理");
         }
 
         ConnectionManager connectionManager = getConnection();
 
-        Map<String, Object> paramMap = JSONUtil.toMap(data);
+        try {
+            Map<String, Object> paramMap = JSONUtil.toMap(data);
 
-        StringBuffer sql = new StringBuffer();
-        sql.append("update ");
-        sql.append(tableName);
-        sql.append(" set ");
+            StringBuffer sql = new StringBuffer();
+            sql.append("update ");
+            sql.append(tableName);
+            sql.append(" set ");
 
-        List<Object> paramList = new ArrayList<>();
+            List<Object> paramList = new ArrayList<>();
 
-        Boolean first = false;
-        for (Map.Entry<String, Object> item : paramMap.entrySet()) {
-            if(item.getValue() == null){
-                continue;
+            Boolean first = false;
+            for (Map.Entry<String, Object> item : paramMap.entrySet()) {
+                if (item.getValue() == null) {
+                    continue;
+                }
+                if (first) {
+                    sql.append(",");
+                }
+                sql.append(item.getKey());
+                sql.append(" = ?");
+                paramList.add(item.getValue());
+
+                first = true;
             }
-            if(first){
-                sql.append(",");
+            sql.append(" where ");
+            SqlBuilderModel sqlBuilderModel = SqlConversion.getSql(sql, conditions);
+            for (Object item : sqlBuilderModel.getParams()) {
+                paramList.add(item);
             }
-            sql.append(item.getKey());
-            sql.append(" = ?");
-            paramList.add(item.getValue());
-
-            first = true;
+            return DBHelper.update(sqlBuilderModel.getSql(), connectionManager.getConnection(), paramList.toArray());
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            connectionManager.close();
         }
-        sql.append(" where ");
-        SqlBuilderModel sqlBuilderModel = SqlConversion.getSql(sql, conditions);
-        for(Object item : sqlBuilderModel.getParams()){
-            paramList.add(item);
-        }
-        int result = DBHelper.update(sqlBuilderModel.getSql(), connectionManager.getConnection(), paramList.toArray());
-        connectionManager.close();
-        return result;
     }
 
     /**
@@ -141,20 +149,23 @@ public class JDBCTemplate {
      * @throws Exception
      */
     public int delete(String tableName, List<Condition> conditions) throws Exception {
-        if(conditions == null || conditions.size() < 1){
+        if (conditions == null || conditions.size() < 1) {
             throw new Exception("为了安全起见，不带条件的删除操作，请自己写sql处理");
         }
         ConnectionManager connectionManager = getConnection();
+        try {
+            StringBuffer sql = new StringBuffer();
+            sql.append("delete from ");
+            sql.append(tableName);
+            sql.append(" where ");
+            SqlBuilderModel sqlBuilderModel = SqlConversion.getSql(sql, conditions);
 
-        StringBuffer sql = new StringBuffer();
-        sql.append("delete from ");
-        sql.append(tableName);
-        sql.append(" where ");
-        SqlBuilderModel sqlBuilderModel = SqlConversion.getSql(sql, conditions);
-
-        int result = DBHelper.update(sqlBuilderModel.getSql(), connectionManager.getConnection(), sqlBuilderModel.getParams());
-        connectionManager.close();
-        return result;
+            return DBHelper.update(sqlBuilderModel.getSql(), connectionManager.getConnection(), sqlBuilderModel.getParams());
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            connectionManager.close();
+        }
     }
 
     /**
@@ -166,41 +177,44 @@ public class JDBCTemplate {
      */
     public int insert(String tableName, Object data) throws Exception {
         ConnectionManager connectionManager = getConnection();
+        try {
+            StringBuffer sql = new StringBuffer();
+            sql.append("insert into ");
+            sql.append(tableName);
+            sql.append(" (");
 
-        StringBuffer sql = new StringBuffer();
-        sql.append("insert into ");
-        sql.append(tableName);
-        sql.append(" (");
+            StringBuffer values = new StringBuffer();
+            values.append(") values (");
 
-        StringBuffer values = new StringBuffer();
-        values.append(") values (");
+            Map<String, Object> paramMap = JSONUtil.toMap(data);
 
-        Map<String, Object> paramMap = JSONUtil.toMap(data);
+            List<Object> paramList = new ArrayList<>();
 
-        List<Object> paramList = new ArrayList<>();
+            Boolean first = false;
+            for (Map.Entry<String, Object> item : paramMap.entrySet()) {
+                if (item.getValue() == null) {
+                    continue;
+                }
+                if (first) {
+                    sql.append(",");
+                    values.append(",");
+                }
+                sql.append(item.getKey());
+                values.append("?");
+                paramList.add(item.getValue());
 
-        Boolean first = false;
-        for(Map.Entry<String, Object> item : paramMap.entrySet()){
-            if(item.getValue() == null){
-                continue;
+                first = true;
             }
-            if(first){
-                sql.append(",");
-                values.append(",");
-            }
-            sql.append(item.getKey());
-            values.append("?");
-            paramList.add(item.getValue());
 
-            first = true;
+            sql.append(values);
+            sql.append(")");
+
+            return DBHelper.update(sql.toString(), connectionManager.getConnection(), paramList.toArray());
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            connectionManager.close();
         }
-
-        sql.append(values);
-        sql.append(")");
-
-        int result = DBHelper.update(sql.toString(), connectionManager.getConnection(), paramList.toArray());
-        connectionManager.close();
-        return result;
     }
 
     /* -------------------------------------- 自定义sql做复杂操作 ------------------------------------------ */
@@ -217,26 +231,29 @@ public class JDBCTemplate {
     public <T> List<T> selectList(String sql, Object param, Class<T> cls) throws Exception {
 
         ConnectionManager connectionManager = getConnection();
+        try {
+            List<T> resultList = new ArrayList<>();
 
-        List<T> resultList = new ArrayList<>();
+            if (param instanceof Object[]) {
+                List<Map<String, Object>> result = DBHelper.selectList(sql, connectionManager.getConnection(), (Object[]) param);
+                for (Map<String, Object> item : result) {
+                    resultList.add(JSONUtil.toJavaObject(item, cls));
+                }
+            } else {
 
-        if (param instanceof Object[]) {
-            List<Map<String, Object>> result = DBHelper.selectList(sql, connectionManager.getConnection(), (Object[])param);
-            for (Map<String, Object> item : result){
-                resultList.add(JSONUtil.toJavaObject(item, cls));
+                SqlBuilderModel sqlBuilderModel = SqlConversion.builderSql(sql, param);
+
+                List<Map<String, Object>> result = DBHelper.selectList(sqlBuilderModel.getSql(), connectionManager.getConnection(), sqlBuilderModel.getParams());
+                for (Map<String, Object> item : result) {
+                    resultList.add(JSONUtil.toJavaObject(item, cls));
+                }
             }
             return resultList;
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            connectionManager.close();
         }
-
-        SqlBuilderModel sqlBuilderModel = SqlConversion.builderSql(sql, param);
-
-        List<Map<String, Object>> result = DBHelper.selectList(sqlBuilderModel.getSql(), connectionManager.getConnection(), sqlBuilderModel.getParams());
-        for (Map<String, Object> item : result){
-            resultList.add(JSONUtil.toJavaObject(item, cls));
-        }
-
-        connectionManager.close();
-        return resultList;
     }
 
     /**
@@ -290,15 +307,18 @@ public class JDBCTemplate {
      */
     public int exec(String sql, Object param) throws Exception {
         ConnectionManager connectionManager = getConnection();
-        if (param instanceof Object[]) {
-            return DBHelper.update(sql, connectionManager.getConnection(), (Object[])param);
+        try {
+            if (param instanceof Object[]) {
+                return DBHelper.update(sql, connectionManager.getConnection(), (Object[]) param);
+            }
+
+            SqlBuilderModel sqlBuilderModel = SqlConversion.builderSql(sql, param);
+            return DBHelper.update(sqlBuilderModel.getSql(), connectionManager.getConnection(), sqlBuilderModel.getParams());
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            connectionManager.close();
         }
-
-        SqlBuilderModel sqlBuilderModel = SqlConversion.builderSql(sql, param);
-        int result = DBHelper.update(sqlBuilderModel.getSql(), connectionManager.getConnection(), sqlBuilderModel.getParams());
-
-        connectionManager.close();
-        return result;
     }
 
     /**
