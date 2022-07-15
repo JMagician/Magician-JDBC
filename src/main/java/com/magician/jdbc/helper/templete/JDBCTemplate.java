@@ -357,9 +357,6 @@ public class JDBCTemplate {
      * @throws Exception
      */
     public <T> PageModel<T> selectPageCustomCountSql(String sql, String countSql, PageParamModel pageParamModel, Class<T> cls) throws Exception {
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append(sql);
-        stringBuffer.append(" limit {pageStart},{pageSize}");
 
         Map result = selectOne(countSql, pageParamModel.getParam(), Map.class);
         Object totalObj = result.get("total");
@@ -369,6 +366,10 @@ public class JDBCTemplate {
 
         pageParamModel.getParam().put("pageStart",(pageParamModel.getCurrentPage()-1) * pageParamModel.getPageSize());
         pageParamModel.getParam().put("pageSize",pageParamModel.getPageSize());
+
+        StringBuffer stringBuffer = new StringBuffer();
+        stringBuffer.append(sql);
+        stringBuffer.append(" limit {pageStart},{pageSize}");
 
         List<T> resultList = selectList(stringBuffer.toString(), pageParamModel.getParam(), cls);
 
