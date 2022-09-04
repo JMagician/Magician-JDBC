@@ -17,19 +17,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 数据库操作
+ * database operations
  */
 public class JDBCTemplate {
 
     /**
-     * 数据源
+     * data source
      */
     private String dataSource;
 
     private JDBCTemplate(){}
 
     /**
-     * 获取对象
+     * Get JDBCTemplate object
      * @return
      */
     public static JDBCTemplate get(){
@@ -37,7 +37,7 @@ public class JDBCTemplate {
     }
 
     /**
-     * 获取对象
+     * Get JDBCTemplate object
      * @param dataSource
      * @return
      */
@@ -50,10 +50,10 @@ public class JDBCTemplate {
         return jdbcTemplate;
     }
 
-    /* -------------------------------------- 单表的无sql操作 ------------------------------------------ */
+    /* -------------------------------------- SQL-free operation of a single table ------------------------------------------ */
 
     /**
-     * 无sql，单表查询
+     * No sql, single table query
      * @param tableName
      * @param conditions
      * @param cls
@@ -90,7 +90,7 @@ public class JDBCTemplate {
     }
 
     /**
-     * 无sql更新数据
+     * No sql, single table update
      * @param tableName
      * @param data
      * @param conditions
@@ -99,7 +99,7 @@ public class JDBCTemplate {
      */
     public int update(String tableName,  Object data, List<Condition> conditions) throws Exception {
         if (conditions == null || conditions.size() < 1) {
-            throw new Exception("为了安全起见，不带条件的修改操作，请自己写sql处理");
+            throw new Exception("For the sake of safety, please write sql for unconditional modification operations.");
         }
 
         ConnectionManager connectionManager = getConnection();
@@ -142,7 +142,7 @@ public class JDBCTemplate {
     }
 
     /**
-     * 无sql删除数据
+     * No sql, single table delete
      * @param tableName
      * @param conditions
      * @return
@@ -150,7 +150,7 @@ public class JDBCTemplate {
      */
     public int delete(String tableName, List<Condition> conditions) throws Exception {
         if (conditions == null || conditions.size() < 1) {
-            throw new Exception("为了安全起见，不带条件的删除操作，请自己写sql处理");
+            throw new Exception("For the sake of safety, please write sql for unconditional delete operations.");
         }
         ConnectionManager connectionManager = getConnection();
         try {
@@ -169,7 +169,7 @@ public class JDBCTemplate {
     }
 
     /**
-     * 无sql插入数据
+     * No sql, single table insert
      * @param tableName
      * @param data
      * @return
@@ -217,10 +217,10 @@ public class JDBCTemplate {
         }
     }
 
-    /* -------------------------------------- 自定义sql做复杂操作 ------------------------------------------ */
+    /* -------------------------------------- Customize sql to do complex operations ------------------------------------------ */
 
     /**
-     * 查询列表
+     * query list
      * @param sql
      * @param param
      * @param cls
@@ -257,7 +257,7 @@ public class JDBCTemplate {
     }
 
     /**
-     * 查询列表
+     * query list
      * @param sql
      * @param cls
      * @param <T>
@@ -269,7 +269,7 @@ public class JDBCTemplate {
     }
 
     /**
-     * 查询一条数据
+     * query a piece of data
      * @param sql
      * @param cls
      * @param <T>
@@ -279,7 +279,7 @@ public class JDBCTemplate {
     public <T> T selectOne(String sql, Object param, Class<T> cls) throws Exception {
         List<T> resultList = selectList(sql, param, cls);
         if (resultList != null && resultList.size() > 1) {
-            throw new Exception("数据超过了一条");
+            throw new Exception("more than one data");
         }
         if (resultList != null && resultList.size() < 1) {
             return null;
@@ -288,7 +288,7 @@ public class JDBCTemplate {
     }
 
     /**
-     * 查询一条数据
+     * query a piece of data
      * @param sql
      * @param cls
      * @param <T>
@@ -300,7 +300,7 @@ public class JDBCTemplate {
     }
 
     /**
-     * 增删改
+     * insert, delete, update
      * @param sql
      * @param param
      * @return
@@ -322,7 +322,7 @@ public class JDBCTemplate {
     }
 
     /**
-     * 增删改
+     * insert, delete, update
      * @param sql
      * @return
      */
@@ -330,10 +330,10 @@ public class JDBCTemplate {
         return exec(sql, new Object[0]);
     }
 
-    /* -------------------------------------- 分页查询 ------------------------------------------ */
+    /* -------------------------------------- Paging query ------------------------------------------ */
 
     /**
-     * 采用默认的countSql进行分页查询
+     * Use the default countSql for paging queries
      * @param sql
      * @param pageParamModel
      * @param cls
@@ -347,7 +347,7 @@ public class JDBCTemplate {
     }
 
     /**
-     * 采用自定义countSql 进行分页查询
+     * Paging query with custom countSql
      * @param sql
      * @param countSql
      * @param pageParamModel
@@ -383,7 +383,7 @@ public class JDBCTemplate {
     }
 
     /**
-     * 计算总页数
+     * Calculate the total number of pages
      * @param pageModel
      * @return
      */
@@ -398,7 +398,7 @@ public class JDBCTemplate {
     }
 
     /**
-     * 获取事务里的连接
+     * Get the connection in the transaction
      * @return
      */
     private ConnectionManager getConnection() throws Exception {

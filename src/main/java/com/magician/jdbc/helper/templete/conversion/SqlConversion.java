@@ -10,10 +10,13 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * sql converter
+ */
 public class SqlConversion {
 
     /**
-     * 往sql后面拼接条件
+     * Splicing conditions behind sql
      * @param sql
      * @param conditions
      * @return
@@ -42,7 +45,7 @@ public class SqlConversion {
     }
 
     /**
-     * 是否是where
+     * is it where
      * @param val
      * @return
      */
@@ -54,7 +57,7 @@ public class SqlConversion {
     }
 
     /**
-     * 构建sql语句，处理占位符
+     * Build sql statements, handle placeholders
      *
      * @param sql
      * @param args
@@ -84,7 +87,7 @@ public class SqlConversion {
     }
 
     /**
-     * 替换占位符为问号
+     * Replace placeholders with question marks
      * @param sql
      * @param params
      * @param jsonObject

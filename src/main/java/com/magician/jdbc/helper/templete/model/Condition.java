@@ -1,7 +1,7 @@
 package com.magician.jdbc.helper.templete.model;
 
 /**
- * 条件构造器
+ * Conditional constructor
  */
 public class Condition {
 
@@ -28,7 +28,7 @@ public class Condition {
     }
 
     /**
-     * 获取一个条件构造器
+     * Get a conditional constructor
      * @param key
      * @param val
      * @return

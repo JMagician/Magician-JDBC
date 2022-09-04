@@ -5,12 +5,12 @@ import com.magician.jdbc.helper.manager.DataSourceManager;
 import javax.sql.DataSource;
 
 /**
- * JDBC创建
+ * JDBC management
  */
 public class MagicianJDBC {
 
     /**
-     * 创建一个JDBC实例
+     * Create a JDBC instance
      * @return
      */
     public static MagicianJDBC createJDBC(){
@@ -18,7 +18,7 @@ public class MagicianJDBC {
     }
 
     /**
-     * 添加数据源
+     * Add datasource
      * @param name
      * @param dataSource
      * @return
@@ -29,7 +29,7 @@ public class MagicianJDBC {
     }
 
     /**
-     * 设置默认数据源名称
+     * Set default datasource name
      * @return
      */
     public MagicianJDBC defaultDataSourceName(String name){

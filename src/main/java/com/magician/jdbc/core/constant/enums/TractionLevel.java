@@ -1,7 +1,7 @@
 package com.magician.jdbc.core.constant.enums;
 
 /**
- * 事务隔离级别
+ * Transaction isolation level
  */
 public enum TractionLevel {
 

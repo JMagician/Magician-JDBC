@@ -4,16 +4,28 @@ import com.magician.jdbc.core.util.JSONUtil;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Paging query parameter format
+ */
 public class PageParamModel {
 
+    /**
+     * query parameters
+     */
     private Map<String,Object> param;
 
+    /**
+     * page number to query
+     */
     private int currentPage;
 
+    /**
+     * page size
+     */
     private int pageSize;
 
     /**
-     * 创建一个分页参数对象
+     * Create a pagination parameter object
      * @param page
      * @param pageSize
      * @return

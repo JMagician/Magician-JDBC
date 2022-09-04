@@ -1,7 +1,7 @@
 package com.magician.jdbc.core.util;
 
 /**
- * 线程工具类
+ * thread tool class
  * @author yuye
  *
  */

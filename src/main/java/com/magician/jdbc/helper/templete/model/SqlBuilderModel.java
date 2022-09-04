@@ -1,5 +1,8 @@
 package com.magician.jdbc.helper.templete.model;
 
+/**
+ * After the sql is built, it is returned in this format
+ */
 public class SqlBuilderModel {
 
     private String sql;

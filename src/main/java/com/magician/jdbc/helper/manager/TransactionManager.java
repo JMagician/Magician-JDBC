@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 事务管理
+ * transaction management
  * @author yuye
  *
  */
@@ -20,16 +20,16 @@ public class TransactionManager {
 	private static Logger logger = LoggerFactory.getLogger(TransactionManager.class);
 
 	/**
-	 * 获取数据库连接，并设置为不自动提交
-	 * 将获取到的连接 放到缓存中
+	 * Get a database connection and set it to not commit automatically
+	 * Put the acquired connection in the cache
 	 */
 	public static void beginTraction() {
 		beginTraction(TractionLevel.READ_COMMITTED);
 	}
 
 	/**
-	 * 获取数据库连接，并设置为不自动提交
-	 * 将获取到的连接 放到缓存中
+	 * Get a database connection and set it to not commit automatically
+	 * Put the acquired connection in the cache
 	 */
 	public static void beginTraction(TractionLevel tractionLevel) {
 		try {
@@ -46,12 +46,12 @@ public class TransactionManager {
 
 			ThreadUtil.getThreadLocal().set(connections);
 		} catch (Exception e) {
-			logger.error("开启事务出错", e);
+			logger.error("Error begin transaction", e);
 		}
 	}
 
 	/**
-	 * 从缓存中获取当前线程的数据库连接，并提交事务
+	 * Get the current thread's database connection from the cache and commit the transaction
 	 */
 	public static void commit() {
 		try {
@@ -63,14 +63,14 @@ public class TransactionManager {
 				connection.close();
 			}
 		} catch (Exception e) {
-			logger.error("提交事务出错", e);
+			logger.error("Error committing transaction", e);
 		} finally {
 			ThreadUtil.getThreadLocal().remove();
 		}
 	}
 
 	/**
-	 * 从缓存中获取当前线程的数据库连接，并回滚事务
+	 * Get the current thread's database connection from the cache and roll back the transaction
 	 */
 	public static void rollback() {
 		try {
@@ -82,7 +82,7 @@ public class TransactionManager {
 				connection.close();
 			}
 		} catch (Exception ex) {
-			logger.error("回滚事务出错", ex);
+			logger.error("rollback transaction error", ex);
 		} finally {
 			ThreadUtil.getThreadLocal().remove();
 		}

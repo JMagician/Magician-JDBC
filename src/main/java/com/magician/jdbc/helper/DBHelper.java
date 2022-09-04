@@ -8,19 +8,19 @@ import java.sql.*;
 import java.util.*;
 
 /**
- * JDBC连接帮助类
+ * JDBC connection helper class
  */
 public class DBHelper {
 
     private static Logger logger = LoggerFactory.getLogger(DBHelper.class);
 
     /**
-     * 查询列表
+     * Query list
      *
-     * @param sql        sql语句
-     * @param connection 数据库连接
-     * @param params     参数
-     * @return 结果集
+     * @param sql
+     * @param connection
+     * @param params
+     * @return
      * @throws Exception
      */
     public static List<Map<String, Object>> selectList(String sql, Connection connection, Object[] params) throws Exception {
@@ -46,20 +46,20 @@ public class DBHelper {
     }
 
     /**
-     * 有条件查询
+     * Conditional query
      *
-     * @param sql        sql语句
-     * @param connection 数据库连接
-     * @param params     参数
-     * @return 结果集
+     * @param sql
+     * @param connection
+     * @param params
+     * @return
      * @throws Exception
      */
     public static ResultSet select(String sql, Connection connection, Object[] params) throws Exception {
-        if(logger.isDebugEnabled()){
-            logger.debug("sql:{},params:{}",sql, JSONUtil.toJSONString(params));
+        if (logger.isDebugEnabled()) {
+            logger.debug("sql:{},params:{}", sql, JSONUtil.toJSONString(params));
         }
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        if(params != null && params.length > 0){
+        if (params != null && params.length > 0) {
             for (int i = 0; i < params.length; i++) {
                 preparedStatement.setObject(i + 1, params[i]);
             }
@@ -68,23 +68,23 @@ public class DBHelper {
     }
 
     /**
-     * 有条件增删改
+     * Conditional additions and deletions
      *
-     * @param sql        sql语句
-     * @param connection 数据库连接
-     * @param params     参数
-     * @return 受影响行数
+     * @param sql
+     * @param connection
+     * @param params
+     * @return
      * @throws Exception
      */
     public static int update(String sql, Connection connection, Object[] params) throws Exception {
         if (params == null) {
             params = new Object[0];
         }
-        if(logger.isDebugEnabled()){
-            logger.debug("sql:{},params:{}",sql, JSONUtil.toJSONString(params));
+        if (logger.isDebugEnabled()) {
+            logger.debug("sql:{},params:{}", sql, JSONUtil.toJSONString(params));
         }
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
-        if(params != null && params.length > 0){
+        if (params != null && params.length > 0) {
             for (int i = 0; i < params.length; i++) {
                 preparedStatement.setObject(i + 1, params[i]);
             }

@@ -3,32 +3,36 @@ package com.magician.jdbc.helper.templete.model;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Paging data return format
+ * @param <T>
+ */
 public class PageModel<T> implements Serializable {
 
     private static final long serialVersionUID = -5979851513918558698L;
 
     /**
-     * 当前页
+     * current page
      */
     private Integer currentPage;
 
     /**
-     * 每页条数
+     * page size
      */
     private Integer pageSize;
 
     /**
-     * 总条数
+     * page count
      */
     private Integer pageCount;
 
     /**
-     * 总页数
+     * page total
      */
     private Integer pageTotal;
 
     /**
-     * 当前页的数据
+     * current page data
      */
     private List<T> dataList;
 

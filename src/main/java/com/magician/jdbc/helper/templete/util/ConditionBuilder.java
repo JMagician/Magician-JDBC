@@ -6,17 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 条件构造器
+ * Condition builder
  */
 public class ConditionBuilder {
 
     /**
-     * 条件集合
+     * condition set
      */
     private List<Condition> conditionList;
 
     /**
-     * 创建一个构造器
+     * create a conditionBuilder object
      * @return
      */
     public static ConditionBuilder createCondition(){
@@ -26,7 +26,7 @@ public class ConditionBuilder {
     }
 
     /**
-     * 添加条件
+     * Add condition
      * @param key
      * @param val
      * @return
@@ -37,7 +37,7 @@ public class ConditionBuilder {
     }
 
     /**
-     * 获取条件集合
+     * Get condition set
      * @return
      */
     public List<Condition> build(){

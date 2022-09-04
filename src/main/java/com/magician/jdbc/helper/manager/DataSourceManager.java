@@ -5,14 +5,14 @@ import java.sql.Connection;
 import java.util.*;
 
 /**
- * 数据源管理
+ * Data source management
  */
 public class DataSourceManager {
 
     private static Map<String, DataSource> dataSourceMap = new HashMap<>();
 
     /**
-     * 默认数据源名称
+     * Default data source name
      */
     private static String defaultDataSourceName;
 
@@ -24,7 +24,7 @@ public class DataSourceManager {
         dataSourceMap.put(name, dataSource);
     }
     /**
-     * 获取默认数据源名称
+     * Get the default data source name
      *
      * @return
      */
@@ -38,7 +38,7 @@ public class DataSourceManager {
 
 
     /**
-     * 获取所有的数据源对象
+     * Get all datasource objects
      *
      * @return
      * @throws Exception
@@ -48,7 +48,7 @@ public class DataSourceManager {
     }
 
     /**
-     * 获取数据库连接
+     * get database connection
      *
      * @return
      * @throws Exception
@@ -56,7 +56,7 @@ public class DataSourceManager {
     public static Connection getConnection(String dataSourceName) throws Exception {
         DataSource dataSource = dataSourceMap.get(dataSourceName);
         if (dataSource == null) {
-            throw new Exception("没有找到name为[" + dataSourceName + "]的数据源");
+            throw new Exception("No data source with name [" + dataSourceName + "] found");
         }
         Connection connection = dataSource.getConnection();
         connection.setAutoCommit(true);
