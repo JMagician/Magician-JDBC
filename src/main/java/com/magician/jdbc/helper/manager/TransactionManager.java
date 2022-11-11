@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +23,7 @@ public class TransactionManager {
 	 * Get a database connection and set it to not commit automatically
 	 * Put the acquired connection in the cache
 	 */
-	public static void beginTraction() {
+	public static void beginTraction() throws Exception {
 		beginTraction(TractionLevel.READ_COMMITTED);
 	}
 
@@ -32,7 +31,7 @@ public class TransactionManager {
 	 * Get a database connection and set it to not commit automatically
 	 * Put the acquired connection in the cache
 	 */
-	public static void beginTraction(TractionLevel tractionLevel) {
+	public static void beginTraction(TractionLevel tractionLevel) throws Exception {
 		try {
 			Map<String, DataSource> maps = DataSourceManager.getDruidDataSources();
 
@@ -48,6 +47,7 @@ public class TransactionManager {
 			ThreadUtil.getThreadLocal().set(connections);
 		} catch (Exception e) {
 			logger.error("Error begin transaction", e);
+			throw e;
 		}
 	}
 
@@ -55,59 +55,89 @@ public class TransactionManager {
 	 * Get the current thread's database connection from the cache and commit the transaction
 	 */
 	public static void commit() throws Exception {
-		Map<String, Connection> connections = null;
-		try {
-			connections = (Map<String, Connection>) ThreadUtil.getThreadLocal().get();
+		Map<String, Connection> connections = getConnectionMap();
+		if (connections == null) {
+			return;
+		}
 
-			for (String key : connections.keySet()) {
+		boolean success = true;
+
+		for (String key : connections.keySet()) {
+			try {
 				Connection connection = connections.get(key);
 				connection.commit();
+			} catch (Exception e) {
+				logger.error("Error committing transaction", e);
+				success = false;
+				continue;
 			}
-		} catch (Exception e) {
-			logger.error("Error committing transaction", e);
-			throw e;
-		} finally {
-			try {
-				if(connections != null){
-					for (String key : connections.keySet()) {
-						Connection connection = connections.get(key);
-						connection.close();
-					}
-				}
-			} catch (Exception e){
-				throw e;
-			}
-			ThreadUtil.getThreadLocal().remove();
+		}
+
+		close(connections);
+
+		ThreadUtil.getThreadLocal().remove();
+
+		if(success == false){
+			throw new Exception("rollback transaction error");
 		}
 	}
 
 	/**
 	 * Get the current thread's database connection from the cache and roll back the transaction
 	 */
-	public static void rollback() throws SQLException {
-		Map<String, Connection> connections = null;
-		try {
-			connections = (Map<String, Connection>) ThreadUtil.getThreadLocal().get();
+	public static void rollback() throws Exception {
+		Map<String, Connection> connections = getConnectionMap();
+		if (connections == null) {
+			return;
+		}
 
-			for (String key : connections.keySet()) {
+		boolean success = true;
+
+		for (String key : connections.keySet()) {
+			try {
 				Connection connection = connections.get(key);
 				connection.rollback();
+			} catch (Exception e) {
+				logger.error("rollback transaction error", e);
+				success = false;
+				continue;
 			}
-		} catch (Exception e) {
-			logger.error("rollback transaction error", e);
-			throw e;
-		} finally {
-			try {
-				if(connections != null){
-					for (String key : connections.keySet()) {
-						Connection connection = connections.get(key);
-						connection.close();
-					}
-				}
-			} catch (Exception e){
-				throw e;
-			}
-			ThreadUtil.getThreadLocal().remove();
 		}
+
+		close(connections);
+
+		ThreadUtil.getThreadLocal().remove();
+
+		if(success == false){
+			throw new Exception("rollback transaction error");
+		}
+	}
+
+	/**
+	 * Close the connection
+	 * @param connections
+	 */
+	private static void close(Map<String, Connection> connections){
+		for (String key : connections.keySet()) {
+			try {
+				Connection connection = connections.get(key);
+				connection.close();
+			} catch (Exception e) {
+				logger.error("rollback transaction error", e);
+				continue;
+			}
+		}
+	}
+
+	/**
+	 * Get connection from ThreadLocal
+	 * @return
+	 */
+	private static Map<String, Connection> getConnectionMap(){
+		Object transactionObj = ThreadUtil.getThreadLocal().get();
+		if(transactionObj == null || (transactionObj instanceof Map) == false){
+			return null;
+		}
+		return (Map<String, Connection>) transactionObj;
 	}
 }
