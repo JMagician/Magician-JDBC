@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,18 +54,29 @@ public class TransactionManager {
 	/**
 	 * Get the current thread's database connection from the cache and commit the transaction
 	 */
-	public static void commit() {
+	public static void commit() throws Exception {
+		Map<String, Connection> connections = null;
 		try {
-			Map<String, Connection> connections = (Map<String, Connection>) ThreadUtil.getThreadLocal().get();
+			connections = (Map<String, Connection>) ThreadUtil.getThreadLocal().get();
 
 			for (String key : connections.keySet()) {
 				Connection connection = connections.get(key);
 				connection.commit();
-				connection.close();
 			}
 		} catch (Exception e) {
 			logger.error("Error committing transaction", e);
+			throw e;
 		} finally {
+			try {
+				if(connections != null){
+					for (String key : connections.keySet()) {
+						Connection connection = connections.get(key);
+						connection.close();
+					}
+				}
+			} catch (Exception e){
+				throw e;
+			}
 			ThreadUtil.getThreadLocal().remove();
 		}
 	}
@@ -72,18 +84,29 @@ public class TransactionManager {
 	/**
 	 * Get the current thread's database connection from the cache and roll back the transaction
 	 */
-	public static void rollback() {
+	public static void rollback() throws SQLException {
+		Map<String, Connection> connections = null;
 		try {
-			Map<String, Connection> connections = (Map<String, Connection>) ThreadUtil.getThreadLocal().get();
+			connections = (Map<String, Connection>) ThreadUtil.getThreadLocal().get();
 
 			for (String key : connections.keySet()) {
 				Connection connection = connections.get(key);
 				connection.rollback();
-				connection.close();
 			}
-		} catch (Exception ex) {
-			logger.error("rollback transaction error", ex);
+		} catch (Exception e) {
+			logger.error("rollback transaction error", e);
+			throw e;
 		} finally {
+			try {
+				if(connections != null){
+					for (String key : connections.keySet()) {
+						Connection connection = connections.get(key);
+						connection.close();
+					}
+				}
+			} catch (Exception e){
+				throw e;
+			}
 			ThreadUtil.getThreadLocal().remove();
 		}
 	}
