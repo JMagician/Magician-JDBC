@@ -33,7 +33,7 @@ public class TransactionManager {
 	 */
 	public static void beginTraction(TractionLevel tractionLevel) throws Exception {
 		try {
-			Map<String, DataSource> maps = DataSourceManager.getDruidDataSources();
+			Map<String, DataSource> maps = DataSourceManager.getDataSources();
 
 			Map<String, Connection> connections = new HashMap<>();
 

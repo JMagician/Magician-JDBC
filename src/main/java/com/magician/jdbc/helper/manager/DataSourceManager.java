@@ -43,7 +43,7 @@ public class DataSourceManager {
      * @return
      * @throws Exception
      */
-    public static Map<String, DataSource> getDruidDataSources() throws Exception {
+    public static Map<String, DataSource> getDataSources() throws Exception {
         return dataSourceMap;
     }
 
